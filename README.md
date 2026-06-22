@@ -1,0 +1,2 @@
+# exptracker
+Track daily expenses 
