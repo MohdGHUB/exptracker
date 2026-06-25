@@ -232,10 +232,10 @@ function localMonthStr(d = new Date()) { return `${d.getFullYear()}-${String(d.g
 const SUPABASE_URL = 'https://nsmfqaaoxsqnrqkxjamm.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zbWZxYWFveHNxbnJxa3hqYW1tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTA4MjEsImV4cCI6MjA5NzcyNjgyMX0.iuEQqafnJN1Y0F80YFHdEqxlv8781v1L_2h-kpWqJ30';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let currentUser = null, serverMode = false, authMode = 'login';
-let expenses = [], editingId = null, activeFilter = 'All';
-const today = localDateStr();
-let currentMonth = localMonthStr(), expandedDays = new Set([today]);
+var currentUser = null, serverMode = false, authMode = 'login';
+var expenses = [], editingId = null, activeFilter = 'All';
+var today = localDateStr();
+var currentMonth = localMonthStr(), expandedDays = new Set([today]);
 
 function updateStatus() {
   const dot = document.getElementById('statusDot'), label = document.getElementById('statusLabel');
