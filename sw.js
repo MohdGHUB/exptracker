@@ -1,4 +1,4 @@
-var CACHE = 'exptracker-v1';
+var CACHE = 'exptracker-v2';
 var ASSETS = [
   '/exptracker/',
   '/exptracker/index.html',
@@ -22,11 +22,27 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
-  // Network first for Supabase API calls, cache first for everything else
-  if (e.request.url.indexOf('supabase.co') > -1) {
+  var url = e.request.url;
+
+  // Network first for Supabase API calls
+  if (url.indexOf('supabase.co') > -1) {
     e.respondWith(fetch(e.request).catch(function() { return caches.match(e.request); }));
     return;
   }
+
+  // Network first for HTML so updates always show immediately
+  if (e.request.mode === 'navigate' || url.indexOf('/exptracker/') > -1) {
+    e.respondWith(
+      fetch(e.request).then(function(resp) {
+        var clone = resp.clone();
+        caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
+        return resp;
+      }).catch(function() { return caches.match(e.request); })
+    );
+    return;
+  }
+
+  // Cache first for everything else (JS libraries, icons, etc.)
   e.respondWith(
     caches.match(e.request).then(function(cached) {
       return cached || fetch(e.request).then(function(resp) {
