@@ -197,7 +197,10 @@
       <input id="authPassword" type="password" placeholder="..." style="width:100%;border:2px solid #e8e8e8;border-radius:10px;padding:11px 14px;font-size:0.95rem;outline:none;font-family:inherit;" onkeydown="if(event.key==='Enter')submitAuth()" />
     </div>
     <div id="authMsg" style="display:none;padding:10px 14px;border-radius:8px;font-size:0.85rem;margin-bottom:14px;"></div>
-    <button id="authSubmitBtn" onclick="submitAuth()" style="width:100%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border:none;border-radius:10px;padding:13px;font-size:0.95rem;font-weight:600;cursor:pointer;margin-bottom:16px;font-family:inherit;">Log In</button>
+    <button id="authSubmitBtn" onclick="submitAuth()" style="width:100%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border:none;border-radius:10px;padding:13px;font-size:0.95rem;font-weight:600;cursor:pointer;margin-bottom:12px;font-family:inherit;">Log In</button>
+    <p id="forgotRow" style="text-align:center;margin-bottom:12px;">
+      <a href="#" onclick="showForgotPassword(event)" style="font-size:0.82rem;color:#aaa;text-decoration:none;">Forgot password?</a>
+    </p>
     <p style="text-align:center;font-size:0.85rem;color:#999;margin:0;">
       <span id="authToggleText">Don't have an account?</span>
       <a href="#" onclick="toggleAuthMode(event)" id="authToggleLink" style="color:#4f46e5;font-weight:600;text-decoration:none;margin-left:4px;">Sign Up</a>
@@ -320,6 +323,27 @@ function toggleAuthMode(e) {
   document.getElementById('authToggleText').textContent = isLogin?"Don't have an account?":'Already have an account?';
   document.getElementById('authToggleLink').textContent = isLogin?'Sign Up':'Log In';
   document.getElementById('authMsg').style.display='none';
+  document.getElementById('forgotRow').style.display = isLogin?'block':'none';
+}
+function showForgotPassword(e) {
+  e.preventDefault();
+  var email = document.getElementById('authEmail').value.trim();
+  if (!email) { showAuthMsg('Enter your email address above first'); return; }
+  var confirmed = confirm('Send a password reset link to:\n' + email + '?');
+  if (!confirmed) return;
+  var btn = document.getElementById('authSubmitBtn');
+  btn.disabled = true;
+  fetch(SB_URL+'/auth/v1/recover', {
+    method: 'POST',
+    headers: sbHeaders(),
+    body: JSON.stringify({ email: email })
+  }).then(function(r) {
+    showAuthMsg('Reset link sent. Check your email inbox.', false);
+    btn.disabled = false;
+  }).catch(function(err) {
+    showAuthMsg('Could not send reset email. Try again.');
+    btn.disabled = false;
+  });
 }
 function showAuthMsg(msg, isError) {
   isError = isError === undefined ? true : isError;
