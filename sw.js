@@ -1,4 +1,4 @@
-var CACHE = 'exptracker-v2';
+var CACHE = 'exptracker-v3';
 var ASSETS = [
   '/exptracker/',
   '/exptracker/index.html',
